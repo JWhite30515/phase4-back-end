@@ -1,5 +1,8 @@
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne } from "typeorm";
+
+import { Customer } from './Customer';
 import { CustomerCreditCard } from "./CustomerCreditCard";
+import { Employee } from "./Employee";
 import { UserVisitTheater } from "./UserVisitTheater";
 
 @Entity("User", { schema: "Team19" })
@@ -20,7 +23,6 @@ export class User {
     name: "status"
   })
   status: string;
-
 
   @Column("varchar", {
     nullable: false,
@@ -45,8 +47,12 @@ export class User {
   })
   lastname: string;
 
-  // @OneToOne(() => Customer, (Customer: Customer) => Customer.username, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
-  // customer: Customer | null;
+  @OneToOne(
+    () => Customer,
+    (Customer: Customer) => Customer.username,
+    { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' }
+  )
+  customer: Customer | null;
 
   @OneToMany(
     () => CustomerCreditCard,
@@ -61,5 +67,12 @@ export class User {
     { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' }
   )
   userVisitTheaters: UserVisitTheater[];
+
+  @OneToOne(
+    () => Employee,
+    (Employee: Employee) => Employee.username,
+    { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' }
+  )
+  employee: Employee | null;
 
 }

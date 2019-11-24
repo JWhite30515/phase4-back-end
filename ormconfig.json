@@ -9,8 +9,7 @@
     "database": "Team19",
     "synchronize": false,
     "entities": [
-      "/src/entities/*.js",
-      "src/entities/*.ts"
+      "./src/entities/*.ts"
     ]
   }
 ]

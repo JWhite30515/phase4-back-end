@@ -4,21 +4,32 @@ import { Request, Response } from "express";
 import { createConnection } from 'typeorm';
 
 import { User } from './entities/User';
+import { saveCreditCard } from './routes/CustomerCreditCards';
+
+import { login } from './routes/Users';
 
 createConnection().then(async connection => {
   // create and setup express app
   const app = express();
   app.use(bodyParser.json());
 
-  // register routes
+  // allow access
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+  
 
-  const port = 3000;
+  // register routes
+  const port = 3001;
   app.listen(port, () => { console.log(`Listening on port ${port}`) });
 
-  let userRepository = connection.getRepository(User);
-  let test = await userRepository.find();
-  console.log(test);
   // start express server
+
+  app.post('/credit-card/', saveCreditCard);
+
+  app.post('/users/login', login);
 
 
   // app.get("/users", function(req: Request, res: Response) {

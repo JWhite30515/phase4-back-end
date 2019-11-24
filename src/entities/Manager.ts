@@ -1,9 +1,10 @@
-import { Column, Entity, Index, JoinColumn, OneToMany, ManyToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, OneToMany, ManyToOne, OneToOne } from "typeorm";
 import { Employee } from "./Employee";
 import { Company } from "./Company";
 import { Theater } from "./Theater";
 
 @Entity("Manager", { schema: "Team19" })
+@Index("manAddress", ["manStreet", "manCity", "manState", "manZipcode"], { unique: true })
 @Index("comName", ["comName",])
 export class Manager extends Employee {
 
@@ -42,4 +43,14 @@ export class Manager extends Employee {
   @OneToMany(() => Theater, (Theater: Theater) => Theater.manUsername, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
   theaters: Theater[];
 
+  // @OneToOne(
+  //   () => Employee,
+  //   (Employee: Employee) => Employee.username,
+  //   {
+  //     onDelete: 'NO ACTION',
+  //     onUpdate: 'NO ACTION'
+  //   }
+  // )
+  // @JoinColumn({ name: 'username' })
+  // username: Employee | null;
 }
