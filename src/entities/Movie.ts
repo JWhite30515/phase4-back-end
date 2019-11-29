@@ -16,7 +16,7 @@ export class Movie {
     primary: true,
     name: "movReleaseDate"
   })
-  movReleaseDate: string;
+  movReleaseDate: Date;
 
   @Column("time", {
     nullable: false,

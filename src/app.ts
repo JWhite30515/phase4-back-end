@@ -4,9 +4,21 @@ import { Request, Response } from "express";
 import { createConnection } from 'typeorm';
 
 import { User } from './entities/User';
-import { saveCreditCard } from './routes/CustomerCreditCards';
 
-import { login } from './routes/Users';
+import { getCompanies, getCompanyDetail } from './routes/Companies';
+import { saveCreditCard } from './routes/CustomerCreditCards';
+import {
+  login,
+  getUsers,
+  registerCustomer,
+  registerManager,
+  registerManagerCustomer,
+  registerUser,
+  updateUserStatus
+} from './routes/Users';
+
+import { createMovie } from './routes/Movies';
+import { createTheater, getValidManagers } from './routes/Theaters';
 
 createConnection().then(async connection => {
   // create and setup express app
@@ -19,7 +31,6 @@ createConnection().then(async connection => {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
   });
-  
 
   // register routes
   const port = 3001;
@@ -27,31 +38,28 @@ createConnection().then(async connection => {
 
   // start express server
 
+  // credit card routes
   app.post('/credit-card/', saveCreditCard);
 
+  // user routes
   app.post('/users/login', login);
+  app.post('/users/register-user', registerUser);
+  app.post('/users/register-customer', registerCustomer);
+  app.post('/users/register-manager', registerManager);
+  app.post('/users/register-manager-customer', registerManagerCustomer);
+  app.get('/users', getUsers);
+  app.post('/users/', updateUserStatus)
+  app.get('/users/valid-managers', getValidManagers);
 
+  // company routes
+  app.get('/companies', getCompanies);
+  app.post('/companies/company-detail', getCompanyDetail);
 
-  // app.get("/users", function(req: Request, res: Response) {
-  //     // here we will have logic to return all users
-  // });
+  // theaters
+  app.post('/theaters', createTheater);
 
-  // app.get("/users/:id", function(req: Request, res: Response) {
-  //     // here we will have logic to return user by id
-  // });
-
-  // app.post("/users", function(req: Request, res: Response) {
-  //     // here we will have logic to save a user
-  // });
-
-  // app.put("/users/:id", function(req: Request, res: Response) {
-  //     // here we will have logic to update a user by a given user id
-  // });
-
-  // app.delete("/users/:id", function(req: Request, res: Response) {
-  //     // here we will have logic to delete a user by a given user id
-  // });
-
+  // movies
+  app.post('/movies', createMovie);
 
 }).catch((error) => { console.error(error) });
 
