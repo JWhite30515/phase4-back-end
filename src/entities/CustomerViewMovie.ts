@@ -47,7 +47,7 @@ export class CustomerViewMovie {
     primary: true,
     name: "movReleaseDate"
   })
-  movReleaseDate: string;
+  movReleaseDate: Date;
 
 
   @Column("date", {
@@ -55,6 +55,6 @@ export class CustomerViewMovie {
     primary: true,
     name: "movPlayDate"
   })
-  movPlayDate: string;
+  movPlayDate: Date;
 
 }

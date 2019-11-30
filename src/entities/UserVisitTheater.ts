@@ -14,7 +14,7 @@ export class UserVisitTheater {
     scale: 0,
     name: "visitId"
   })
-  visitId: string;
+  visitId: number;
 
   @ManyToOne(
     () => User,
@@ -45,6 +45,6 @@ export class UserVisitTheater {
     nullable: false,
     name: "visitDate"
   })
-  visitDate: string;
+  visitDate: Date;
 
 }
