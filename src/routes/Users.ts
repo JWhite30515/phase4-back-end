@@ -172,6 +172,8 @@ export async function login(req: Request, res: Response) {
         creditCards,
       };
       res.send(result);
+    } else {
+      throw new Error('Error logging in');
     }
   } catch (e) {
     res.status(400).send(e);

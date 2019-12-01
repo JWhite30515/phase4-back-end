@@ -98,6 +98,25 @@ export async function getTheaterMovies(req: Request, res: Response) {
         manUsername: mgr,
       })
       .getOne();
+
+    const allMovies = await manager.getRepository(Movie)
+      .find();
+    
+    const allMoviePlays = await manager.getRepository(MoviePlay)
+      .find();
+
+    const moviesNoPlay = [];
+    
+    for (const movie of allMovies) {
+      const found = allMoviePlays.find(mp => mp.movName === movie.movName);
+
+      if (!found) moviesNoPlay.push(movie);
+    }
+
+    if (!theater) {
+      res.send(moviesNoPlay);
+      return;
+    }
     
     const moviePlays = await manager.getRepository(MoviePlay)
       .find({
@@ -120,20 +139,6 @@ export async function getTheaterMovies(req: Request, res: Response) {
         ...moviePlay,
         duration: movie.duration,
       })
-    }
-
-    const allMovies = await manager.getRepository(Movie)
-      .find();
-    
-    const allMoviePlays = await manager.getRepository(MoviePlay)
-      .find();
-
-    const moviesNoPlay = [];
-    
-    for (const movie of allMovies) {
-      const found = allMoviePlays.find(mp => mp.movName === movie.movName);
-
-      if (!found) moviesNoPlay.push(movie);
     }
     
     for (const movie of moviesNoPlay) {

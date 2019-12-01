@@ -223,19 +223,21 @@ export async function getViewHistory(req: Request, res: Response) {
       })
       .getMany();
 
-    const viewedMovies = [];
+    const result = [];
 
     for (const card of creditCards) {
-      const viewedMovie = await manager.getRepository(CustomerViewMovie)
+      const viewedMovies = await manager.getRepository(CustomerViewMovie)
         .createQueryBuilder('v')
         .leftJoinAndSelect('v.creditCardNum', 'creditCardNum')
         .where({
           creditCardNum: card.creditCardNum,
         })
-        .getOne();
-      if (viewedMovie) viewedMovies.push(viewedMovie);
+        .getMany();
+      for (const viewedMovie of viewedMovies) {
+        if (viewedMovie) result.push(viewedMovie);
+      }
     }
-    res.send(viewedMovies);
+    res.send(result);
 
   } catch (e) {
     console.error(e);
