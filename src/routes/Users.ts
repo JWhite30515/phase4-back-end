@@ -140,12 +140,23 @@ export async function login(req: Request, res: Response) {
   let result: { user: User, type: UserType, creditCards: CustomerCreditCard[] };
 
   try {
+    const data: any[] = await manager
+      .query(`
+        SELECT * FROM USER WHERE username = ? AND password = MD5(?)
+      `, [ username, password ]);
+    
+    if (!data[0]) throw new Error('Error logging in');
+
+    const foundUsername = data[0].username;
+
     const foundUser = await manager.getRepository(User)
       .findOne({
-        where: { username, password }
+        where: {
+          username: foundUsername,
+        }
       });
-  
-    if (foundUser) {
+    
+    if (foundUser && foundUser.status === UserStatus.approved) {
       let userType = await determineUserType(foundUser);
       const creditCards = await manager.getRepository(CustomerCreditCard)
         .createQueryBuilder('c')
@@ -200,18 +211,13 @@ export async function registerUser(req: Request, res: Response) {
     password,
   } = req.body;
   try {
+
     const result = await manager
-      .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values({
-        username,
-        firstname,
-        lastname,
-        password,
-        status: UserStatus.pending,
-      })
-      .execute();
+      .query(`
+        INSERT INTO USER (username, password, firstname, lastname)
+        VALUES (?, MD5(?), ?, ?)
+      `, [username, password, firstname, lastname]);
+
     res.send(result);
   } catch (e) {
     console.error(e);
@@ -236,19 +242,21 @@ export async function registerManager(req: Request, res: Response) {
     zipCode
   } = req.body;
 
-  const user = new User();
-  user.username = username;
-  user.firstname = firstname;
-  user.lastname = lastname;
-  user.password = password;
-  user.status = UserStatus.pending;
   try {
     await manager
-      .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values(user)
-      .execute();
+      .query(`
+        INSERT INTO USER (username, password, firstname, lastname)
+        VALUES (?, MD5(?), ?, ?)
+      `, [username, password, firstname, lastname]);
+    
+    console.log('inserted user');
+
+    const user = await manager.getRepository(User)
+      .findOne({
+        where: {
+          username,
+        }
+      });
 
     const foundCompany = await manager.getRepository(Company)
       .findOne({ where: { comName: company.value } })
@@ -300,22 +308,22 @@ export async function registerManagerCustomer(req: Request, res: Response) {
     creditCards
   } = req.body;
 
-
-  const user = new User();
-  user.username = username;
-  user.firstname = firstname;
-  user.lastname = lastname;
-  user.password = password;
-  user.status = UserStatus.pending;
-
   try {
     await manager
-      .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values(user)
-      .execute();
+      .query(`
+        INSERT INTO USER (username, password, firstname, lastname)
+        VALUES (?, MD5(?), ?, ?)
+      `, [username, password, firstname, lastname]);
+    
+    console.log('inserted user');
 
+    const user = await manager.getRepository(User)
+      .findOne({
+        where: {
+          username,
+        }
+      });
+  
     await manager
       .createQueryBuilder()
       .insert()
@@ -371,19 +379,21 @@ export async function registerCustomer(req: Request, res: Response) {
     creditCards,
   } = req.body;
 
-  const user = new User();
-  user.username = username;
-  user.firstname = firstname;
-  user.lastname = lastname;
-  user.password = password;
-  user.status = UserStatus.pending;
   try {
     await manager
-      .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values(user)
-      .execute();
+      .query(`
+        INSERT INTO USER (username, password, firstname, lastname)
+        VALUES (?, MD5(?), ?, ?)
+      `, [username, password, firstname, lastname]);
+    
+    console.log('inserted user');
+
+    const user = await manager.getRepository(User)
+      .findOne({
+        where: {
+          username,
+        }
+      });
 
     const result = await manager
       .createQueryBuilder()

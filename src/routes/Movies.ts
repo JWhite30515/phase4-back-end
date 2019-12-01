@@ -25,10 +25,17 @@ export async function createMovie(req: Request, res: Response) {
       duration,
       date
     } = req.body;
+
+    const hours = Math.floor(Number(duration) / 60);
+    const minutes = Number(duration) % 60;
+  
+    const durationString =
+      `${hours}:${minutes}:00`;
   
     const movie = new Movie();
     movie.movName = name;
-    movie.duration = duration;
+    movie.duration = durationString;
+    
     movie.movReleaseDate = new Date(date);
     
     const result = await manager
@@ -226,7 +233,7 @@ export async function getViewHistory(req: Request, res: Response) {
           creditCardNum: card.creditCardNum,
         })
         .getOne();
-      viewedMovies.push(viewedMovie);
+      if (viewedMovie) viewedMovies.push(viewedMovie);
     }
     res.send(viewedMovies);
 

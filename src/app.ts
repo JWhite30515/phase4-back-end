@@ -20,7 +20,7 @@ import {
 } from './routes/Users';
 
 import { createMovie, getMovies, scheduleMovie, getMoviePlays, viewMovie, getViewHistory } from './routes/Movies';
-import { createTheater, getValidManagers } from './routes/Theaters';
+import { createTheater, getValidManagers, getTheaterMovies } from './routes/Theaters';
 
 createConnection().then(async connection => {
   // create and setup express app
@@ -59,6 +59,7 @@ createConnection().then(async connection => {
 
   // theaters
   app.post('/theaters', createTheater);
+  app.post('/theaters/movies', getTheaterMovies);
 
   // movies
   app.post('/movies', createMovie);
